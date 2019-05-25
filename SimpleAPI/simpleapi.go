@@ -11,7 +11,8 @@ import (
 )
 
 type Person struct {
-	ID        string   `json:"id,omitempty"` //wyluczy jesli bedzie pusty
+	// TODO: POLA MUSZĄ SIĘ ZACZYNAĆ Z WIELKIEJ LITERY, INACZEJ ICH JSON NIE CZYTA
+	ID        string   `json:"id,omitempty"` //wykluczy jesli bedzie pusty
 	Firstname string   `json:"firstname,omitempty"`
 	Lastname  string   `json:"lastname,omitempty"`
 	Address   *Address `json:"address,omitempty"`
@@ -59,6 +60,7 @@ func CreatePersonFromUrlEndpoint(w http.ResponseWriter, req *http.Request) {
 	person.Lastname = params["lastname"]
 	person.Address.City = params["city"]
 	person.Address.State = params["state"]
+	//wszzystkie parametry są przekazane jako string z urla, gdyby w structcie był np jakiś int to trzeba by go sparsować najpierw
 	people = append(people, person)   //dołoncza nowo stworzoną osobę do slicea people
 	json.NewEncoder(w).Encode(people) //wyswietli wszystkich ludzi na liscie po wykonaniu sie kodu który jest wyżej
 }
