@@ -14,6 +14,8 @@ func main() {
 	makePostRequestWithHeader()
 }
 
+println(sads)
+
 func makeGetRequest() {
 	resp, err := http.Get("https://httpbin.org/get")
 	if err != nil {
@@ -50,7 +52,6 @@ func makePostRequest() {
 }
 
 func makePostRequestWithHeader() {
-
 	jsonData := map[string]string{"name": "greg", "lastname": "bush"} //stworzenie mapy danych
 	jsonValue, _ := json.Marshal(jsonData)                            //zamiana danych na forma jsona
 
@@ -69,5 +70,4 @@ func makePostRequestWithHeader() {
 	}
 
 	log.Println(string(body))
-
 }

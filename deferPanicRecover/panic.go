@@ -25,7 +25,7 @@ func basicPanic() {
 
 //schemat kolejności:
 func panicAndDeferDependence() {
-	fmt.Println("start")                   //normalne isntrukcje przed paniciem sie wykonaja
+	+fmt.Println("start")                  //normalne isntrukcje przed paniciem sie wykonaja
 	defer fmt.Println("this was deferred") //zdeferowane instrukcje przed paniciem beda czekac az otaczajaca je funkcja sie wykona
 	panic("something bad happen")          // panic ubija funkcje, ale zanim to zrobi, wszystkie zdeferowane wczsesniej instrukcje się wykonują
 	fmt.Println("end")                     // instrukcje po panicu w danej funckcji juz się nie wykonaja
