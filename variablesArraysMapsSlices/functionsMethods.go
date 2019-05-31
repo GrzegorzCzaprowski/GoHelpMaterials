@@ -1,6 +1,7 @@
 //FUNKCJE
 //funkcje to tez wartości i moga być przekazywane jak każda inna wartość (np jako wartość innej funkcji
 //funckja może być zamknięta (closure) do jakiejś wartości
+//nazwy metod z duzej litery są globalne, z małej sa prywatne
 var Sum int				//zmienna globalna sum
 func add1() int {		//funkcja add1 korzysta wartości która jest poza nią
 	Sum++
@@ -13,6 +14,7 @@ func main() {
 
 
 //METODY to funkcje przypisane do danych typów lokalnych, czyli:
+//Wszystkie metody do danego typu powinny byc albo wartościami Type albo pointerami *Type
 type Dupa struct{				//struct'ow
 	waga int 
 	kraglosc string
@@ -25,7 +27,9 @@ func (d Dupa) kopnij(){
 	d.kopnieta = true		//zmieni wartość kopnieta podanej d Dupy na true
 }
 
-//POINTERY
+//POINTERY, czyli zmienne wskaźnikowe pozwalających na bezpośredni dostęp do pamięci,
+// pamięć jest reprezentowana jako jednowymiarowa tablica bajtów – wszystkie zmienne (statyczne i dynamiczne) są umieszczane w tej „tablicy”. 
+
 //można deklarowac metody za pomocą pointer receiver'ow *T. pracują one wtedy bezpośrenio na danym typie, a nie jego kopii
 //jak Value Receiver
 func (d Dupa) schudnijTroche(){			//nie ma pointera, operujemy na kopii
@@ -57,13 +61,13 @@ func main() {
 	fmt.Println(d)						//zmiany nie nastąpią
 }	//wydrukuje: 20
 
-//z COSTAMCOSTAM
+//z REFERENCJĄ, operatorem referencji, operatorem adresu - zwraca fizyczny adres komórki pamięci przechowującej &zmienną
+//wartość, która zawiera informacje o położeniu innej wartości w pamięci 
 func schudnijTroche(d *Dupa){			//nie ma pointera, operujemy na kopii structa
 	d.waga = d.waga - 5
 }
-
 func main() {
 	d := Dupa{20, "wypukla", false}    
-	schudnijTroche(&d)					//funkcja operuje na rginale, wskazanym przez & (TODO:??wkazuje miejsce w pamieci)
+	schudnijTroche(&d)					//funkcja operuje na orginale, wskazanym przez & operator adresu
 	fmt.Println(d)						//zmiany nastąpią
 }	//wydrukuje: 15
