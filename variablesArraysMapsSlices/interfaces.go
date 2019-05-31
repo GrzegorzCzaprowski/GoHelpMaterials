@@ -1,4 +1,6 @@
 //INTERFACE'Y
+//interfacy to też rodzaj wartości jak int czy jakis struct
+//jedna zmienna może miec wiecej niz jeden typ czyli zmienna burek jest typu dog i animal
 //interfejsy nie opisują danych (od tego structy), tylo opisują zachowania
 // w structach znajdują sie dane, zmienne, w interfejsach są metody
 
