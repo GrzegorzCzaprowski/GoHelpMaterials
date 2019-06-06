@@ -1,1 +1,0 @@
-// TODO: jeżeli usunie się jakiś objekt z mapy, to nie zostanie on tak naprawdę usunięty, jego wartości zostaną zastąpione nilami i zerami. PAMIEĆ NIE ZOSTANIE ZWOLNIONA. przy dużych mapach ryzyko braku pamięci (out of memory OOM)
