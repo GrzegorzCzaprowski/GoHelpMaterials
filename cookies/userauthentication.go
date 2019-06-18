@@ -33,13 +33,15 @@ func login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	user := User{}
 	json.NewDecoder(req.Body).Decode(&user)
 
-	cookie := &http.Cookie{ //zadeklarowanie ciastka
-		Name: "userlogcookie",
+	cookie := &http.Cookie{ //zainicjowanie
+		Name:  "userlogcookie",
+		Value: "0",
 	}
 
 	for _, u := range baza {
 		if u == user {
-			cookie.Value = "true"
+			//val := fmt.Sprintf("true" + user.Name)
+			cookie.Value = user.Name
 			http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
 			log.Printf("%v user logged\n", user.Name)
 			return
@@ -48,10 +50,22 @@ func login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	cookie.Value = "false"
 	http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
 	log.Printf("%v cant login\n", user.Name)
+
 }
 
 func logout(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-
+	var cookie *http.Cookie
+	cookie, err := req.Cookie("userlogcookie")
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("cookie", cookie)
+		return
+	}
+	name := cookie.Value
+	cookie.Value = "false"
+	cookie.MaxAge = -1
+	http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
+	log.Printf("%v user logged out", name)
 }
 
 func change(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
@@ -62,9 +76,18 @@ func change(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 		fmt.Println("cookie", cookie)
 		return
 	}
-	if cookie.Value = "true"{
-		
+	userName := cookie.Value
+
+	for i := range baza {
+		if baza[i].Name == userName {
+
+			baza[i].Logged = 111111
+
+			log.Printf("%v user value changed %v", baza[i].Name, baza[i].Logged)
+			return
+		}
 	}
+	log.Printf("%v user cant be find", userName)
 
 }
 
