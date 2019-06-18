@@ -1,8 +1,11 @@
 package main
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 
@@ -15,6 +18,17 @@ type User struct {
 }
 
 var baza []User
+
+func hashCookie(cookievalue string) string {
+	h := hmac.New(sha256.New, []byte("Nothing to see here, goy."))
+	io.WriteString(h, cookievalue)
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+//TODO: Nie wiadomo czy hash i check dzialaja w ten sposob
+func checkCookie(hashedCookieValue string) bool {
+	return hmac.Equal([]byte(hashedCookieValue), []byte("Nothing to see here, goy."))
+}
 
 func post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	user := User{}
@@ -42,12 +56,14 @@ func login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 		if u == user {
 			//val := fmt.Sprintf("true" + user.Name)
 			cookie.Value = user.Name
+			cookie.MaxAge = 30
 			http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
 			log.Printf("%v user logged\n", user.Name)
 			return
 		}
 	}
 	cookie.Value = "false"
+	cookie.MaxAge = -1
 	http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
 	log.Printf("%v cant login\n", user.Name)
 
