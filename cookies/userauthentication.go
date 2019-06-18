@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -54,6 +55,16 @@ func logout(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 }
 
 func change(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+	var cookie *http.Cookie
+	cookie, err := req.Cookie("userlogcookie")
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("cookie", cookie)
+		return
+	}
+	if cookie.Value = "true"{
+		
+	}
 
 }
 
