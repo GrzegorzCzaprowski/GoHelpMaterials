@@ -18,16 +18,17 @@ type User struct {
 }
 
 var baza []User
+var key = []byte("Nothing to see here, goy.")
 
 func hashCookie(cookievalue string) string {
-	h := hmac.New(sha256.New, []byte("Nothing to see here, goy."))
+	h := hmac.New(sha256.New, key)
 	io.WriteString(h, cookievalue)
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
 //TODO: Nie wiadomo czy hash i check dzialaja w ten sposob
 func checkCookie(hashedCookieValue string) bool {
-	return hmac.Equal([]byte(hashedCookieValue), []byte("Nothing to see here, goy."))
+	return hmac.Equal([]byte(hashedCookieValue), key)
 }
 
 func post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
@@ -54,15 +55,15 @@ func login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 
 	for _, u := range baza {
 		if u == user {
-			//val := fmt.Sprintf("true" + user.Name)
-			cookie.Value = user.Name
+
+			cookie.Value = hashCookie(user.Name)
 			cookie.MaxAge = 30
 			http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
 			log.Printf("%v user logged\n", user.Name)
 			return
 		}
 	}
-	cookie.Value = "false"
+	cookie.Value = hashCookie("false")
 	cookie.MaxAge = -1
 	http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
 	log.Printf("%v cant login\n", user.Name)
@@ -92,7 +93,7 @@ func change(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 		fmt.Println("cookie", cookie)
 		return
 	}
-	userName := cookie.Value
+	userName := checkCookie(cookie.Value)
 
 	for i := range baza {
 		if baza[i].Name == userName {
