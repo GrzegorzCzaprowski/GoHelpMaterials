@@ -56,14 +56,14 @@ func login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	for _, u := range baza {
 		if u == user {
 
-			cookie.Value = hashCookie(user.Name)
+			cookie.Value = user.Name
 			cookie.MaxAge = 30
 			http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
 			log.Printf("%v user logged\n", user.Name)
 			return
 		}
 	}
-	cookie.Value = hashCookie("false")
+	cookie.Value = "false"
 	cookie.MaxAge = -1
 	http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
 	log.Printf("%v cant login\n", user.Name)
@@ -93,7 +93,7 @@ func change(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 		fmt.Println("cookie", cookie)
 		return
 	}
-	userName := checkCookie(cookie.Value)
+	userName := cookie.Value
 
 	for i := range baza {
 		if baza[i].Name == userName {
