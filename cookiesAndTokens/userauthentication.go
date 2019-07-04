@@ -1,11 +1,8 @@
 package main
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 
@@ -13,23 +10,24 @@ import (
 )
 
 type User struct {
-	Name   string `json:"name,omitempty"`
-	Logged int    `json:"logged,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Password string `json:"password,omitempty"`
+	Content  string `json:"content,omitempty"`
 }
 
 var baza []User
-var key = []byte("Nothing to see here, goy.")
 
-func hashCookie(cookievalue string) string {
-	h := hmac.New(sha256.New, key)
-	io.WriteString(h, cookievalue)
-	return fmt.Sprintf("%x", h.Sum(nil))
-}
+// var key = []byte("Nothing to see here, goy.")
 
-//TODO: Nie wiadomo czy hash i check dzialaja w ten sposob
-func checkCookie(hashedCookieValue string) bool {
-	return hmac.Equal([]byte(hashedCookieValue), key)
-}
+// func hashCookie(cookievalue string) string {
+// 	h := hmac.New(sha256.New, key)
+// 	io.WriteString(h, cookievalue)
+// 	return fmt.Sprintf("%x", h.Sum(nil))
+// }
+
+// func checkCookie(hashedCookieValue string) bool {
+// 	return hmac.Equal([]byte(hashedCookieValue), key)
+// }
 
 func post(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	user := User{}
@@ -54,12 +52,12 @@ func login(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	}
 
 	for _, u := range baza {
-		if u == user {
+		if u.Name == user.Name && u.Password == user.Password {
 
 			cookie.Value = user.Name
 			cookie.MaxAge = 30
 			http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
-			log.Printf("%v user logged\n", user.Name)
+			log.Printf("%v user Logged\n", user.Name)
 			return
 		}
 	}
@@ -82,7 +80,7 @@ func logout(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	cookie.Value = "false"
 	cookie.MaxAge = -1
 	http.SetCookie(w, cookie) //ustawienie ciastka dla odpowiedzi
-	log.Printf("%v user logged out", name)
+	log.Printf("%v user Password out", name)
 }
 
 func change(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
@@ -98,9 +96,9 @@ func change(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 	for i := range baza {
 		if baza[i].Name == userName {
 
-			baza[i].Logged = 111111
+			baza[i].Content = "111111"
 
-			log.Printf("%v user value changed %v", baza[i].Name, baza[i].Logged)
+			log.Printf("%v user value changed %v", baza[i].Name, baza[i].Password)
 			return
 		}
 	}
@@ -111,7 +109,7 @@ func change(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
 func main() {
 	router := httprouter.New()
 
-	user1 := User{Name: "user1", Logged: 3}
+	user1 := User{Name: "user1", Password: "3", Content: "12345"}
 	baza = append(baza, user1)
 
 	router.POST("/post", post)
